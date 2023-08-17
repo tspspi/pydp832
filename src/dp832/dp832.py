@@ -87,22 +87,22 @@ class DP832(powersupply.PowerSupply):
 
 	def _setChannelEnable(self, enable, channel):
 		if not isinstance(channel, int):
-			raise ValueError("Channel number has to be an integer (0-2)")
-		if (channel < 0) or (channel > 2):
+			raise ValueError("Channel number has to be an integer (1-3)")
+		if (channel < 1) or (channel > 3):
 			raise ValueError("Channel index out of range")
 
 		while True:
 			if enable:
-				resp = self._scpi_command_noreply(f":OUTP CH{channel+1},ON")
+				resp = self._scpi_command_noreply(f":OUTP CH{channel},ON")
 			else:
-				resp = self._scpi_command_noreply(f":OUTP CH{channel+1},OFF")
+				resp = self._scpi_command_noreply(f":OUTP CH{channel},OFF")
 
 			# Do readback ...
 			if self._commandDelay:
 				if self._commandDelay > 0:
 					sleep(self._commandDelay)
 
-			resp = self._scpi_command(f":OUTP? CH{channel + 1}")
+			resp = self._scpi_command(f":OUTP? CH{channel}")
 			if enable:
 				if resp == "ON":
 					return True
@@ -114,18 +114,18 @@ class DP832(powersupply.PowerSupply):
 
 	def _setVoltage(self, voltage, channel):
 		if not isinstance(channel, int):
-			raise ValueError("Channel number has to be an integer (0-2)")
-		if (channel < 0) or (channel > 2):
+			raise ValueError("Channel number has to be an integer (1-3)")
+		if (channel < 1) or (channel > 3):
 			raise ValueError("Channel index out of range")
 		if (voltage < 0) or (voltage > 30):
 			raise ValueError("Voltage has to be in range from 0 to 30V for first two channels")
-		if ((voltage < 0) or (voltage > 5)) and (channel == 2):
+		if ((voltage < 0) or (voltage > 5)) and (channel == 3):
 			raise ValueError("Voltage has to be in range from 0 to 5V for last channel")
 
 		while True:
-			self._scpi_command_noreply(f":SOUR{channel+1}:VOLT {voltage}")
+			self._scpi_command_noreply(f":SOUR{channel}:VOLT {voltage}")
 
-			resp = self._scpi_command(f":SOUR{channel+1}:VOLT?")
+			resp = self._scpi_command(f":SOUR{channel}:VOLT?")
 			d = (float(resp) - float(voltage))
 			if d < 0:
 				d = d * -1.0
@@ -136,16 +136,16 @@ class DP832(powersupply.PowerSupply):
 
 	def _setCurrent(self, current, channel):
 		if not isinstance(channel, int):
-			raise ValueError("Channel number has to be an integer (0-2)")
-		if (channel < 0) or (channel > 2):
+			raise ValueError("Channel number has to be an integer (1-3)")
+		if (channel < 1) or (channel > 3):
 			raise ValueError("Channel index out of range")
 		if (current < 0) or (current > 3):
 			raise ValueError("Current has to be in range from 0 to 3A")
 
 		while True:
-			self._scpi_command_noreply(f":SOUR{channel+1}:CURR {current}")
+			self._scpi_command_noreply(f":SOUR{channel}:CURR {current}")
 
-			resp = self._scpi_command(f":SOUR{channel+1}:CURR?")
+			resp = self._scpi_command(f":SOUR{channel}:CURR?")
 			d = (float(resp) - float(current))
 			if d < 0:
 				d = d * -1.0
@@ -156,12 +156,12 @@ class DP832(powersupply.PowerSupply):
 
 	def _getVoltage(self, channel):
 		if not isinstance(channel, int):
-			raise ValueError("Channel number has to be an integer (0-2)")
-		if (channel < 0) or (channel > 2):
+			raise ValueError("Channel number has to be an integer (1-3)")
+		if (channel < 1) or (channel > 3):
 			raise ValueError("Channel index out of range")
 
 		while True:
-			resp = self._scpi_command(f":MEAS:ALL? CH{channel+1}")
+			resp = self._scpi_command(f":MEAS:ALL? CH{channel}")
 			if resp:
 				parts = resp.split(",")
 				v = float(parts[0])
@@ -174,12 +174,12 @@ class DP832(powersupply.PowerSupply):
 
 	def _getCurrent(self, channel):
 		if not isinstance(channel, int):
-			raise ValueError("Channel number has to be an integer (0-2)")
-		if (channel < 0) or (channel > 2):
+			raise ValueError("Channel number has to be an integer (1-3)")
+		if (channel < 1) or (channel > 3):
 			raise ValueError("Channel index out of range")
 
 		while True:
-			resp = self._scpi_command(f":MEAS:ALL? CH{channel+1}")
+			resp = self._scpi_command(f":MEAS:ALL? CH{channel}")
 			if resp:
 				parts = resp.split(",")
 				v = float(parts[0])
@@ -192,12 +192,12 @@ class DP832(powersupply.PowerSupply):
 
 	def _getLimitMode(self, channel):
 		if not isinstance(channel, int):
-			raise ValueError("Channel number has to be an integer (0-2)")
-		if (channel < 0) or (channel > 2):
+			raise ValueError("Channel number has to be an integer (1-3)")
+		if (channel < 1) or (channel > 3):
 			raise ValueError("Channel index out of range")
 
 		while True:
-			resp = self._scpi_command(f":OUTP:CVCC? CH{channel+1}")
+			resp = self._scpi_command(f":OUTP:CVCC? CH{channel}")
 			if resp:
 				if resp == "CV":
 					return powersupply.PowerSupplyLimit.VOLTAGE
