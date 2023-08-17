@@ -5,6 +5,8 @@ power supply. It implements the ```PowerSupply``` base class from
 the [pylabdevs](https://github.com/tspspi/pylabdevs/tree/master) base
 class.
 
+![A DP832 in a physics lab](https://raw.githubusercontent.com/tspspi/pydp832/master/doc/dp832.jpg)
+
 Currently only control via Ethernet is implemented in the ```DP832LAN```
 class.
 
